@@ -1,0 +1,26 @@
+apply plugin: 'java'
+
+defaultTasks 'initialize'
+
+task initialize (dependsOn: ['printStatus', 'nativeLibHandler']) {
+    println "Init done."
+}
+
+task printStatus  (dependsOn: 'checker'){
+    println "Status check..."
+}
+
+task checker {
+    println "Status valid."
+}
+
+task nativeLibHandler (type: org.gradle.api.tasks.Copy) {
+    println "Copying SO libs."
+    from 'nativeCode/output'
+    into '../sdklibrary/libs'
+    include "*.so"
+}
+
+tasks.withType(org.gradle.api.tasks.compile.JavaCompile) {
+    compileTask -> compileTask.dependsOn(nativeLibHandler)
+}
